@@ -1,0 +1,55 @@
+<html>
+<body>
+
+<ul>
+    {% for blood_group, count in blood_group_counts.items %}
+        <li>{{ blood_group }} : {{ count }}</li>
+    {% endfor %}
+</ul>
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h3 class="text-lg font-semibold mb-2">Pie chart:</h3>
+    <div id="pie_chart">
+        <canvas id="myPieChart"></canvas>
+    </div>
+</div>
+</div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var ctx = document.getElementById('myPieChart').getContext('2d');
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [{% for blood_group, count in blood_group_counts.items %}"{{ blood_group }}", {% endfor %}],
+                datasets: [{
+                    data: [{% for blood_group, count in blood_group_counts.items %}{{ count }}, {% endfor %}],
+                    backgroundColor: [
+                        'rgba(204, 0, 0, 0.7)',     // Dark Red
+                        'rgba(0, 102, 204, 0.7)',   // Darker Blue
+                        'rgba(255, 204, 0, 0.7)',   // Yellow
+                        'rgba(0, 204, 102, 0.7)',   // Green
+                        'rgba(153, 51, 255, 0.7)',  // Purple
+                        'rgba(255, 51, 51, 0.7)',   // Crimson
+                        'rgba(255, 153, 51, 0.7)',  // Orange
+                        'rgba(51, 204, 255, 0.7)'   // Cyan
+                        ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'right'
+                },
+                title: {
+                    display: true,
+                    text: 'Donations by Blood Group'
+                }
+            }
+        });
+    });
+</script>
+    </body>
+</html>

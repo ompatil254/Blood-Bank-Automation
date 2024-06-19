@@ -1,0 +1,106 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to Admin Dashboard</h1>
+    <h2>Drives Created by {{request.user.username}}:</h2>
+    <ul>
+        {% for drive in drives %}
+        <li><a href="{% url 'drive_dets' drive.Venue %}">{{ drive.Venue }}</a> - {{ drive.date_created }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+ -->
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Admin Home - Blood Bank</title>
+     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+     <style>
+         .dropdown-menu {
+             display: none;
+         }
+ 
+         .dropdown:hover .dropdown-menu {
+             display: block;
+         }
+     </style>
+ </head>
+ <body class="bg-gray-100">
+     <header class="bg-red-800 text-white py-4 px-8">
+         <div class="container mx-auto flex justify-between items-center">
+             <h1 class="text-2xl font-bold">Blood Bank</h1>
+             <div class="flex items-center space-x-6">
+                 <a href="{% url 'home' %}" class="text-white hover:text-gray-200">Home</a>
+                 <a href="#" class="text-white hover:text-gray-200">About</a>
+                 <a href="#" class="text-white hover:text-gray-200">Contact</a>
+                 <div class="relative dropdown">
+                     <div class="bg-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer">
+                         <i class="fa-solid fa-user text-gray-600 text-lg"></i>
+                     </div>
+                     <div class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg dropdown-menu">
+                         <a href="#" class="block py-2 px-4 text-gray-800 hover:bg-gray-200">Logout</a>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </header>
+     <div class="container mx-auto px-4 py-8 flex justify-center items-center">
+         <a href="{% url 'CreateDrive' %}" class="bg-red-600 text-white rounded-full px-4 py-2 hover:bg-white hover:text-red-600">Create a new drive</a>
+     </div>
+     <div class="container mx-auto px-4 py-8"> 
+        <div class="text-center"> <!-- Add this div to center its contents -->
+            <h2 class="text-xl font-semibold mb-1">Drives created by {{request.user}}</h2>
+          </div>          
+     </div>
+
+     <div class="w-60% mx-auto mb-20"> 
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="mx-auto w-auto table-auto border-collapse border border-gray-300"> <!-- Added mx-auto class -->
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="px-2 py-2 border border-gray-300"></th>
+                        <th class="px-2 py-2 border border-gray-300">Venue</th>
+                        <th class="px-2 py-2 border border-gray-300">Pincode</th>
+                        <th class="px-2 py-2 border border-gray-300">Date</th>
+                    </tr>
+                </thead>
+                {% for drive in drives %}
+                <tbody>
+                    <tr>
+                        <td class="px-2 py-2 border border-gray-300">{{ forloop.counter }}</td>
+                        <td class="px-2 py-2 border border-gray-300">
+                            <a href="{% url 'drive_dets' drive.Venue %}" style="color: rgb(59, 59, 229);">{{drive.Venue}}</a>
+                        </td>
+                        <td class="px-2 py-2 border border-gray-300">{{drive.Pincode}}</td>
+                        <td class="px-2 py-2 border border-gray-300">{{drive.date_created}}</td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+          
+    <footer class="bg-red-800 text-white py-4 text-center bottom-0 w-full"> 
+        <p>&copy; 2024 Blood Bank. All rights reserved.</p>
+    </footer>
+    
+    
+     <script>
+         document.addEventListener('DOMContentLoaded', function() {
+             document.querySelectorAll('.dropdown').forEach(function(dropdown) {
+                 dropdown.addEventListener('click', function() {
+                     dropdown.querySelector('.dropdown-menu').classList.toggle('hidden');
+                 });
+             });
+         });
+     </script>
+ </body>
+ </html>

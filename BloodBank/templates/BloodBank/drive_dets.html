@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drive Info</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100">
+    <header class="bg-red-800 text-white py-4 px-8">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Blood Bank</h1>
+        <div class="flex items-center space-x-6">
+          <a href="{% url 'home' %}" class="text-white hover:text-gray-200">Home</a>
+          <a href="#" class="text-white hover:text-gray-200">About</a>
+          <a href="#" class="text-white hover:text-gray-200">Contact</a>
+          <div class="relative dropdown">
+            <div
+              class="bg-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer"
+              id="profileIcon"
+            >
+              <i class="fa-solid fa-user text-gray-600 text-lg"></i>
+            </div>
+            <div
+              class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg dropdown-menu hidden"
+            >
+              <a
+                href="{% url 'logout' %}"
+                class="block py-2 px-4 text-gray-800 hover:bg-gray-200"
+                >Logout</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8 flex justify-center items-center">
+        <a href="{% url 'register' group_id %}" class="bg-red-600 text-white rounded-full px-4 py-2 hover:bg-white hover:text-red-600">Add a Donor</a>
+    </div>
+
+
+
+    <div class="container mx-auto px-4 py-1">
+        <h2 class="text-xl font-semibold mb-15 text-center">Drive Details: {{drive_name}}</h2>
+
+
+        <div class="flex">
+            <!-- Table Container -->
+            <div class="w-1/2 overflow-x-auto">
+                <!-- Table -->
+                <table class="table-auto border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="px-4 py-2 border border-gray-300">Sr No.</th>
+                            <th class="px-4 py-2 border border-gray-300">Name</th>
+                            <th class="px-4 py-2 border border-gray-300">Blood Group</th>
+                            <th class="px-4 py-2 border border-gray-300">Age</th>
+                            <th class="px-4 py-2 border border-gray-300">RFID Tag</th>
+                            <th class="px-4 py-2 border border-gray-300">Unit Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for donor in donor_list %}
+                        <tr>
+                            <td class="px-4 py-2 border border-gray-300">{{ forloop.counter }}</td>
+                            <td class="px-4 py-2 border border-gray-300">{{donor.Name}}</td>
+                            <td class="px-4 py-2 border border-gray-300">{{donor.Bloodgroup}}</td>
+                            <td class="px-4 py-2 border border-gray-300">{{donor.Age}}</td>
+                            <td class="px-4 py-2 border border-gray-300">{{donor.RFID}}</td>
+                            <td class="px-4 py-2 border border-gray-300">{{donor.unit_status}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        
+            <!-- Graph display box -->
+            <div class="w-1/2 ml-4">
+                <div class="bg-gray-100 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2 text-center">Donation Distribution:</h3>
+                    <div id="pie_chart">
+                        <canvas id="myPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container mx-auto px-4 py-8 flex justify-center items-center">
+            <a href="{% url 'transfer_to_main' drive_name %}" class="bg-red-600 text-white rounded-full px-4 py-2 hover:bg-white hover:text-red-600">Move to Main Inventory</a>
+        </div>
+
+        <footer class="bg-red-800 text-white py-4 text-center mt-20">
+          <div class="container mx-auto">
+              <p>&copy; 2024 Blood Bank. All rights reserved.</p>
+          </div>
+      </footer>
+      
+      
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const profileIcon = document.getElementById("profileIcon");
+        const dropdownMenu = profileIcon.nextElementSibling;
+
+        profileIcon.addEventListener("click", function () {
+          dropdownMenu.classList.toggle("hidden");
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function (event) {
+          if (!profileIcon.contains(event.target)) {
+            dropdownMenu.classList.add("hidden");
+          }
+        });
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          var ctx = document.getElementById('myPieChart').getContext('2d');
+          var myPieChart = new Chart(ctx, {
+              type: 'pie',
+              data: {
+                  labels: [{% for blood_group in donors %}"{{ blood_group.Bloodgroup }}", {% endfor %}],
+                  datasets: [{
+                      data: [{% for blood_group in donors %}{{ blood_group.count }}, {% endfor %}],
+                      backgroundColor: [
+                          'rgba(204, 0, 0, 0.7)',     // Dark Red
+                          'rgba(0, 102, 204, 0.7)',   // Darker Blue
+                          'rgba(255, 204, 0, 0.7)',   // Yellow
+                          'rgba(0, 204, 102, 0.7)',   // Green
+                          'rgba(153, 51, 255, 0.7)',  // Purple
+                          'rgba(255, 51, 51, 0.7)',   // Crimson
+                          'rgba(255, 153, 51, 0.7)',  // Orange
+                          'rgba(51, 204, 255, 0.7)'   // Cyan
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  legend: {
+                      position: 'right'
+                  },
+                  title: {
+                      display: true,
+                      text: 'Donations by Blood Group'
+                  }
+              }
+          });
+      });
+  </script>
+  
+  </body>
+</html>
